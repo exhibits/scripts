@@ -16,7 +16,8 @@
 # sudo apt-get install fbi 
 
 import time
-import subprocess 
+from subprocess import Popen, PIPE, call
+from threading import Timer
 
 import RPi.GPIO as GPIO
 # Use Default Pin Numbers
@@ -30,18 +31,18 @@ t = None
 omxSlide = None
 
 # fbi does not require xterm, '-noverbose' removes image info text 
-bgImage = subprocess.Popen(["fbi", "-noverbose", "blackBG.jpg"])
+bgImage = Popen(["fbi", "-noverbose", "blackBG.jpg"])
 
 def playSlideShow():
 	global omxSlide
 	global t
 
 	# test video file
-	omxSlide = subprocess.Popen(["omxplayer", "/opt/vc/src/hello_pi/hello_video/test.h264"])
-	#omxSlide = subprocess.Popen(["omxplayer", "/home/pi/prepLabIntro.mp4"], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+	#omxSlide = Popen(["omxplayer", "/opt/vc/src/hello_pi/hello_video/test.h264"], stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+	omxSlide = Popen(["omxplayer", "/home/pi/prepLabIntro.mp4"], stdout=PIPE, stdin=PIPE, stderr=PIPE)
 
-	# There is a better way to do this... should not need a timer.
-	t = threading.Timer(60, playSlideShow)
+	# slide show is 60 + 1 for delay
+	t = Timer(61, playSlideShow)
 	t.start()
 
 playSlideShow()
@@ -49,11 +50,11 @@ playSlideShow()
 while True:	
 	if GPIO.input(18):
 		# close slide show
-		omxSlide.communicate(input='q')[0]
+		omxSlide.stdin.write('q')
 		t.cancel() #stop the playSlideShow timer reapeat
 
 		# play film		
-		subprocess.call(["omxplayer", "/home/pi/prepLabFilm.mp4"])
+		call(["omxplayer", "/home/pi/prepLabFilm.mp4"])
 
 		# restart slide show
 		playSlideShow()
