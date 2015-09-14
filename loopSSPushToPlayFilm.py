@@ -3,12 +3,17 @@
 # Michael Godfrey
 # 9/14/2015
 # Loops a screen saver until BUTTON input on pin12, then plays film.
-# Expects a terminal enviroment; No mouse input/touchscreen
+# Works in Terminal & Desktop 
 #
-# *Remember* to set locations of desired files. See Below
+# *Remember* to set locations of desired files. See Below.
 #
+# IF TERMINAL:
 # $ crontab -e
 # @reboot ./home/pi/gitHub/exhibits/scripts/loopSSPushToPlayFilm.py
+#
+# IF X11:
+# $ sudo nano ~/.config/lxsession/LXDE/autostart
+# sudo ./home/pi/gitHub/exhibits/scripts/loopSSPushToPlayFilm.py
 #######################################################################
 import time
 import subprocess
@@ -42,8 +47,9 @@ def playScreenSaver():
 	)
 
 # MAIN
-# fbi can run without Xterm, use feh if Xterm
+# fbi/feh will safely fail if Terminal vs X11
 subprocess.Popen(['fbi', '-noverbose', bgLocation], shell=False) 
+subprocess.Popen(['feh', '-F', bgLocation], shell=False) 
 # non-blocking
 playScreenSaver()
 
