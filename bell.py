@@ -1,13 +1,13 @@
 #!/usr/bin/
 
-######################################################
+#########################################################
 # Michael Godfrey
 # 11/14/2014/
-# pushbutton player for Paleo Prep Lab
+# Pushbutton program for Lighhouse bell push-to-play.
 # AUTORUN:
 # 	sudo nano ~/.config/lxsession/LXDE/autostart
 # 	make sure that the python call is given superuser
-######################################################
+#########################################################
 import time
 import datetime
 import subprocess
@@ -22,11 +22,9 @@ GPIO.setup(18, GPIO.IN)
 
 while True:	
 	if GPIO.input(18):
-
-		ts = time.time()
-		st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-		print("\nbutton pressed: ", st)
-
+		#ts = time.time()
+		#st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+		#print("\nbutton pressed: ", st)
 		subprocess.call(["omxplayer", "/home/pi/DrumPointLighthouseBell3Strikes.wav"])
 	else:
 		time.sleep(.1)
