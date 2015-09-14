@@ -20,6 +20,7 @@ GPIO.setmode(GPIO.BOARD)
 #GPIO.setwarnings(False)
 # set pin 18 as input
 GPIO.setup(18, GPIO.IN)
+#GPIO.setup(channel, GPIO.OUT)
 
 while True:	
 	if GPIO.input(18):
