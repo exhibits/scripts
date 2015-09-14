@@ -1,8 +1,13 @@
 #!/usr/bin/python
-######################################################
+#######################################################################
 # Michael Godfrey
 # 9/14/2015
-######################################################
+# Loops a screen saver until button input on pin12, then plays film.
+# Set locations of desired film files below
+#
+# $ crontab -e
+# @reboot ./home/pi/gitHub/exhibits/scripts/loopSSPushToPlayFilm.py
+#######################################################################
 import time
 import subprocess
 import sys
@@ -16,21 +21,28 @@ GPIO.setup(12, GPIO.IN)
 
 screenSaver = None
 #######################################################################
+# Set Correct File Locations HERE:
+#######################################################################
 screenSaverLocation 	= '/home/pi/prepLabIntro.mp4'
 filmLocation 		= '/opt/vc/src/hello_pi/hello_video/test.h264'
+bgLocation		= '/home/pi/blackBG.jpg'
 #######################################################################
 
 def playScreenSaver():
 	global screenSaver
 	# If shell=True, then args should be one string, not a list
 	screenSaver = subprocess.Popen(
-		['omxplayer', '--loop', screenSaverLocation], 
+		['omxplayer', '--loop', '--blank', '--no-osd', screenSaverLocation], 
 		stdin=subprocess.PIPE, 
 		stdout=subprocess.PIPE, 
 		stderr=subprocess.STDOUT,
 		shell=False
 	)
-	
+
+# MAIN
+# fbi can run without Xterm, use feh if Xterm
+subprocess.Popen(['fbi', '-noverbose', bgLocation], shell=False) 
+# non-blocking
 playScreenSaver()
 
 while True:	
@@ -52,7 +64,6 @@ while True:
 			playScreenSaver()
 		else:
 			time.sleep(.1)
-
 	# End program cleanly with keyboard
 	except KeyboardInterrupt:
 		print "  Quit"
